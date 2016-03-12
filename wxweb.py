@@ -22,7 +22,10 @@ def get_ip():
 
 @app.route("/")
 def index():
+	print(request.remote_addr)
 	if request.remote_addr.strip() not in get_ip():
+		print(request.remote_addr)
+		print("ok")
 		return "滚犊子!"
 	else:
 		if request.method == "GET":
@@ -39,4 +42,4 @@ def index():
 				return echostr.strip()
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=8080, debug=True)
