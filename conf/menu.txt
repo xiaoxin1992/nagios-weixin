@@ -1,0 +1,14 @@
+{
+    "button": [
+        {
+            "type": "view",
+            "name": "绑定报警",
+            "url": "http://www.baidu.com"
+        },
+        {
+            "type": "view",
+            "name": "取消绑定",
+            "url": "http://www.baidu.com"
+        }
+    ]
+}
