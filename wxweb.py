@@ -15,17 +15,15 @@ def sha1(data):
 
 def get_ip():
 	path = "./conf/wx_server_ip.txt"
-	with open(path,'r') as f:
-		data = f.readlines()
-	return data
+	with open(path, 'r') as f:
+		data = f.read()
+	return json.loads(data)
 
 
 @app.route("/")
 def index():
 	print(request.remote_addr)
 	if request.remote_addr.strip() not in get_ip():
-		print(request.remote_addr)
-		print("ok")
 		return "滚犊子!"
 	else:
 		if request.method == "GET":

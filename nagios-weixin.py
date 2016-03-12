@@ -1,5 +1,5 @@
 #!  _*_ coding:utf-8
-from baseweixin import WeiXin, get, post, file_check
+from baseweixin import WeiXin, get, post, file_check,dumps
 
 
 appid = "wxe0a7ad56e757975f"
@@ -44,10 +44,8 @@ def get_wx_server_ip(path, wx_token):
 	server_list = get(wx_server_url, timeout=20).json()
 	if nagios_send.check_error(server_list):
 		with open(path, 'w') as f:
-			f.write(str(server_list['ip_list']))
+			f.write(dumps(server_list['ip_list']))
 			f.flush()
-
-			#(server_list['ip_list'])
 
 get_wx_server_ip(path="./conf/wx_server_ip.txt", wx_token=token)
 """
