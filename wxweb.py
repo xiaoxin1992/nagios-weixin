@@ -4,9 +4,9 @@ from xml.etree import cElementTree
 import hashlib
 import json
 import time
-import sys
+import os
 token = "xiaoxin"
-
+wx_path = "./conf/wxid_to_mail.json"
 
 def sha1(data):
 	m = hashlib.sha1()
@@ -58,14 +58,14 @@ app = Flask(__name__)
 def index():
 
 	if request.remote_addr.strip() not in get_ip():
-		return "滚犊子!"
+		return "权限不够"
 	if request.method == "GET":
 		signature = request.args.get('signature')
 		echostr = request.args.get('echostr')
 		timestamp = request.args.get('timestamp')
 		nonce = request.args.get('nonce')
-		if not echostr:
-			return "滚犊子!"
+		if not echostr and not signature and not timestamp and not nonce:
+			return "参数错误"
 		data = sorted([token, timestamp, nonce])
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
@@ -95,6 +95,14 @@ def index():
 			return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 		mail = xml_data.find("Content").text
 		if check_mail(mail):
+			read_data = {}
+			if os.path.exists(wx_path):
+				with open(wx_path,'r') as f:
+					read_data = f.read()
+			read_data[mail] = openid
+			with open(wx_path,'w+') as f:
+				f.write(read_data)
+				f.flush()
 			content = "绑定成功,可以收取消息"
 		else:
 			content = "绑定失败,请输入正确的邮箱格式"
