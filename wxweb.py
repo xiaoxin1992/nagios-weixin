@@ -97,7 +97,9 @@ def index():
 			read_data = {}
 			if os.path.exists(wx_path):
 				with open(wx_path, 'r') as f:
-					read_data = f.read()
+					data = f.read()
+				if data:
+					read_data = json.loads(read_data)
 			mail_address = mail.strip()
 			read_data[mail_address] = openid
 			with open(wx_path, 'w+') as f:
