@@ -1,5 +1,5 @@
 #!  _*_ coding:utf-8
-from flask import Flask, request,redirect, url_for
+from flask import Flask, request,redirect, url_for, session
 from xml.etree import cElementTree
 import hashlib
 import json
@@ -44,10 +44,14 @@ def index():
 		xml_data = cElementTree.fromstring(request.stream.read())
 		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
 			if xml_data.find('ToUserName').text.strip() == tousername:
-				pass
-				#session['openid'] = xml_data.find('FromUserName').text.strip()
-		redirect(url_for("http://www.baidu.com"))
+				url = "session/%s" % xml_data.find('FromUserName').text.strip()
+				redirect(url_for(url))
+		return "ok"
 
+@app.route("/session/<openid>", methods=['GET','POST'])
+def wxsession(openid):
+	session['openid'] = openid
+	return "ok"
 
 @app.route("/install", methods=['GET', 'POST'])
 def install():
