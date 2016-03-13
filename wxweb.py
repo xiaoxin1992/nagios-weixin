@@ -1,10 +1,11 @@
 #!  _*_ coding:utf-8
-from flask import Flask, request, session,g
+from flask import Flask, request,redirect, url_for
 from xml.etree import cElementTree
 import hashlib
 import json
 token = "xiaoxin"
 tousername = "gh_e9f237c71fe9"
+
 
 
 def sha1(data):
@@ -25,18 +26,10 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-	openid = ""
-	if request.method == "POST":
-		print("post start")
-		xml_data = cElementTree.fromstring(request.stream.read())
-		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
-			if xml_data.find('ToUserName').text.strip() == tousername:
-				openid = xml_data.find('FromUserName').text.strip()
-	else:
-		if request.remote_addr.strip() not in get_ip():
-			return "<html><body><form action='install' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
-					"<input type='submit' value='绑 定'><input type='text',name='openid' value=%s>" \
-					"</div></form></body></html>" % openid
+
+	if request.remote_addr.strip() not in get_ip():
+		return "滚犊子!"
+	if request.method == "GET":
 		signature = request.args.get('signature')
 		echostr = request.args.get('echostr')
 		timestamp = request.args.get('timestamp')
@@ -46,15 +39,28 @@ def index():
 		data = sorted([token, timestamp, nonce])
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
+	else:
+		print("post start")
+		xml_data = cElementTree.fromstring(request.stream.read())
+		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
+			if xml_data.find('ToUserName').text.strip() == tousername:
+				pass
+				#session['openid'] = xml_data.find('FromUserName').text.strip()
+		redirect(url_for("http://www.baidu.com"))
 
 
 @app.route("/install", methods=['GET', 'POST'])
 def install():
+	test1 = "aadb"
+	print(g.get('test1'))
 	if request.method == "POST":
 		rec = request.stream.read()
-		return "邮箱地址是:%s,要绑定的微信ID为: %s" % (request.form.get('mail'), request.form.get('openid'))
-
+		return "h"
+		#return "邮箱地址是:%s,要绑定的微信ID为: %s" % (request.form.get('mail'), session.get('openid'))
+	return "<html><body><form action='' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
+		"<input type='submit' value='绑 定'></div></form>" \
+		"</body></html>"
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=8080, debug=True)
