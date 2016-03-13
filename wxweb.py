@@ -19,6 +19,37 @@ def get_ip():
 	with open(path, 'r') as f:
 		data = f.read()
 	return json.loads(data)
+
+
+def check_mail(data):
+	website_set = {
+				'cn',
+				'red',
+				'com.cn',
+				'wang',
+				'cc',
+				'xin',
+				'ren',
+				'com',
+				'red',
+				'pub',
+				'co',
+				'net',
+				'org',
+				'info',
+				'xyz',
+				'site',
+				'club',
+				'win'
+	}
+	split_data = data.strip().split('@')
+	if len(split_data) != 2 and split_data[0] == "":
+		return False
+	web_site = split_data[1].split('.')
+	if len(web_site) != 2 or web_site[1] not in website_set:
+		return False
+	return True
+
 app = Flask(__name__)
 
 
@@ -61,7 +92,11 @@ def index():
 		elif msgtype.strip() != "text":
 			content = "仅支持文本消息,回复邮箱地址直接绑定"
 			return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
-		content = "绑定成功,可以收取消息"
+		mail = xml_data.find("Content").text
+		if check_mail(mail):
+			content = "绑定成功,可以收取消息"
+		else:
+			content = "绑定失败,请输入正确的邮箱格式"
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 		"""
 		openid = xml_data.find("FromUserName").text
