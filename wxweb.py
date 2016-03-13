@@ -1,11 +1,10 @@
 #!  _*_ coding:utf-8
-from flask import Flask, make_response,request
-import xml.etree.cElementTree as ET
+from flask import Flask, request, session
+from xml.etree import cElementTree
 import hashlib
 import json
 token = "xiaoxin"
 tousername = "gh_e9f237c71fe9"
-openid = None
 
 
 def sha1(data):
@@ -21,9 +20,12 @@ def get_ip():
 	return json.loads(data)
 app = Flask(__name__)
 
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
 
 @app.route("/", methods=['GET'])
 def index():
+	return "hello"
 	if request.remote_addr.strip() not in get_ip():
 		return "滚犊子!"
 	if request.method == "GET":
@@ -37,10 +39,10 @@ def index():
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
 	else:
-		xml_data = ET.fromstring(request.stream.read())
-		if xml_data.find('MsgType').text.strip() == "event" and  xml_data.find('Event').text.strip() == "VIEW":
+		xml_data = cElementTree.fromstring(request.stream.read())
+		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
 			if xml_data.find('ToUserName').text.strip() == tousername:
-				openid = xml_data.find('FromUserName').text.strip()
+				session['openid'] = xml_data.find('FromUserName').text.strip()
 		return "ok"
 
 
@@ -48,10 +50,11 @@ def index():
 def install():
 	if request.method == "POST":
 		rec = request.stream.read()
-		print(rec)
-		return request.form.get('mail')
+		return "邮箱地址是:%s,要绑定的微信ID为: %s" % (request.form.get('mail'),session.get('openid'))
 	return "<html><body><form action='' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
 		"<input type='submit' value='绑 定'></div></form>" \
 		"</body></html>"
+
+
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8080, debug=True)

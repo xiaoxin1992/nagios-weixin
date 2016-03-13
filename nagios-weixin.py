@@ -38,7 +38,12 @@ def create_menu(path, menu_token):
 	menu_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % menu_token
 	with open(path, 'r') as f:
 		menu_template = f.read()
-	return post(menu_url, data=menu_template.encode('utf-8')).json()
+	ret_post = post(menu_url, data=menu_template.encode('utf-8')).json()
+	if nagios_send.check_error(ret_post):
+		return ret_post
+	return ret_post
+
+
 def get_wx_server_ip(path, wx_token):
 	wx_server_url = "https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s" % wx_token
 	server_list = get(wx_server_url, timeout=20).json()

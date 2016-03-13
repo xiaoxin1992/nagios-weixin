@@ -24,7 +24,8 @@ class WeiXin:
 		self.__token = None
 		self.token_path = path
 
-	def check_error(self, data):
+	@staticmethod
+	def check_error(data):
 		if data.get('errcode'):
 			print(data)
 			return False
