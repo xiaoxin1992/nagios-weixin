@@ -1,5 +1,5 @@
 #!  _*_ coding:utf-8
-from flask import Flask, request, session
+from flask import Flask, request, session,g
 from xml.etree import cElementTree
 import hashlib
 import json
@@ -42,19 +42,19 @@ def index():
 		xml_data = cElementTree.fromstring(request.stream.read())
 		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
 			if xml_data.find('ToUserName').text.strip() == tousername:
-				session['openid'] = xml_data.find('FromUserName').text.strip()
-		return "ok"
+				return "<html><body><form action='install' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
+					"<input type='submit' value='绑 定'><input type='text',name='openid' value=%s>" \
+					"</div></form></body></html>" % xml_data.find('FromUserName').text.strip()
+		return
 
 
 @app.route("/install", methods=['GET', 'POST'])
 def install():
 	if request.method == "POST":
 		rec = request.stream.read()
-		return "邮箱地址是:%s,要绑定的微信ID为: %s" % (request.form.get('mail'), session.get('openid'))
-	return "<html><body><form action='' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
-		"<input type='submit' value='绑 定'></div></form>" \
-		"</body></html>"
+		return "邮箱地址是:%s,要绑定的微信ID为: %s" % (request.form.get('mail'), request.form.get('openid'))
+
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=8080, debug=True)
