@@ -99,13 +99,17 @@ def index():
 				with open(wx_path, 'r') as f:
 					data = f.read()
 				if data:
-					read_data = json.loads(read)
-			mail_address = mail.strip()
-			read_data[mail_address] = openid
-			with open(wx_path, 'w+') as f:
-				f.write(json.dumps(read_data))
-				f.flush()
-			content = "绑定成功,可以收取消息"
+					read_data = json.loads(data)
+			if read_data:
+				if openid not in read_data.values():
+					mail_address = mail.strip()
+					read_data[mail_address] = openid
+					with open(wx_path, 'w+') as f:
+						f.write(json.dumps(read_data))
+						f.flush()
+					content = "绑定成功,可以收取消息"
+				else:
+					content = "您的微信已经绑定,无需在绑定"
 		else:
 			content = "绑定失败,请输入正确的邮箱格式"
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
