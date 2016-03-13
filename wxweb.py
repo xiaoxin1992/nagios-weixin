@@ -54,7 +54,15 @@ def index():
 			if xml_data.find("Event").text.strip() == "subscribe":
 				content = """欢迎关注运维微信,请直接回复邮箱地址绑定"""
 				return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
-		return "ok"
+			elif xml_data.find("Event").text.strip() == "unsubscribe":
+				pass
+			else:
+				return "fail"
+		elif msgtype.strip() != "text":
+			content = "仅支持文本消息,回复邮箱地址直接绑定"
+			return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
+		content = "绑定成功,可以收取消息"
+		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 		"""
 		openid = xml_data.find("FromUserName").text
 
@@ -70,4 +78,4 @@ def index():
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=8080, debug=True)
+	app.run(host='0.0.0.0', port=80, debug=True)
