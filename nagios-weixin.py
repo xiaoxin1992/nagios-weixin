@@ -47,7 +47,8 @@ def get_wx_server_ip(path, wx_token):
 			f.write(dumps(server_list['ip_list']))
 			f.flush()
 
-get_wx_server_ip(path="./conf/wx_server_ip.txt", wx_token=token)
+print(create_menu(path=menu_path, menu_token=token))
+#get_wx_server_ip(path="./conf/wx_server_ip.txt", wx_token=token)
 """
 
 def kf_message(self, tokent, openid, message, msgtype='text'):

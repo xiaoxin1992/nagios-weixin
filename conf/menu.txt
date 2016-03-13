@@ -3,7 +3,7 @@
         {
             "type": "view",
             "name": "绑定报警",
-            "url": "http://www.baidu.com"
+            "url": "http://wiki.golet.me/install"
         },
         {
             "type": "view",

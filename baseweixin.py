@@ -55,6 +55,5 @@ class WeiXin:
 		except Exception:
 			return False
 		if (date - datetime.datetime.strptime(token.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds > token['expires_in']:
-			print("aaa")
 			return False
 		return token['access_token']
