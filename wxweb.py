@@ -4,6 +4,8 @@ import xml.etree.cElementTree as ET
 import hashlib
 import json
 token = "xiaoxin"
+tousername = "gh_e9f237c71fe9"
+openid = None
 
 
 def sha1(data):
@@ -20,7 +22,7 @@ def get_ip():
 app = Flask(__name__)
 
 
-@app.route("/",methods=['GET'])
+@app.route("/", methods=['GET'])
 def index():
 	if request.remote_addr.strip() not in get_ip():
 		return "滚犊子!"
@@ -34,6 +36,12 @@ def index():
 		data = sorted([token, timestamp, nonce])
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
+	else:
+		xml_data = ET.fromstring(request.stream.read())
+		if xml_data.find('MsgType').text.strip() == "event" and  xml_data.find('Event').text.strip() == "VIEW":
+			if xml_data.find('ToUserName').text.strip() == tousername:
+				openid = xml_data.find('FromUserName').text.strip()
+		return "ok"
 
 
 @app.route("/install", methods=['GET', 'POST'])
