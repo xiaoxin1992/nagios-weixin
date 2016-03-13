@@ -22,7 +22,7 @@ def get_ip():
 
 
 def check_mail(data):
-	website_set = {
+	website_set = [
 				'cn',
 				'red',
 				'com.cn',
@@ -41,7 +41,7 @@ def check_mail(data):
 				'site',
 				'club',
 				'win'
-	}
+	]
 	split_data = data.strip().split('@')
 	if len(split_data) != 2 and split_data[0] == "":
 		return False
