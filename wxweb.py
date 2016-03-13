@@ -5,6 +5,7 @@ import hashlib
 import json
 import time
 import os
+import sys
 token = "xiaoxin"
 wx_path = "./conf/wxid_to_mail.json"
 
@@ -46,7 +47,7 @@ def check_mail(data):
 	if len(split_data) != 2 or split_data[0] == "":
 		return False
 	web_site = split_data[1].split('.')
-	if len(web_site) != 2 or web_site[1] not in website_set:
+	if len(web_site) != 2 or web_site[1] not in website_set  or web_site[0] == "":
 		return False
 	return True
 
