@@ -100,26 +100,13 @@ def index():
 				with open(wx_path,'r') as f:
 					read_data = f.read()
 			read_data[mail] = openid
-			with open(wx_path,'w+') as f:
-				f.write(read_data)
+			with open(wx_path, 'w+') as f:
+				f.write(json.dums(read_data))
 				f.flush()
 			content = "绑定成功,可以收取消息"
 		else:
 			content = "绑定失败,请输入正确的邮箱格式"
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
-		"""
-		openid = xml_data.find("FromUserName").text
-
-		content = xml_data.find("Content").text
-		if msgtype != "text":
-			return "fail"
-		print(openid)
-		print(msgtype)
-		print(content)
-		"""
-
-
-
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=80, debug=True)
