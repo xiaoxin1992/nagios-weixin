@@ -1,11 +1,11 @@
 #!  _*_ coding:utf-8
-from flask import Flask, request,redirect, url_for, session
+from flask import Flask, request, make_response
 from xml.etree import cElementTree
 import hashlib
 import json
+import time
+import sys
 token = "xiaoxin"
-tousername = "gh_e9f237c71fe9"
-
 
 
 def sha1(data):
@@ -20,8 +20,6 @@ def get_ip():
 		data = f.read()
 	return json.loads(data)
 app = Flask(__name__)
-
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -40,12 +38,26 @@ def index():
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
 	else:
-		print("post start")
+		msg = """
+		<xml>
+<ToUserName><![CDATA[%(openid)s]]></ToUserName>
+<FromUserName><![CDATA[%(devid)s]]></FromUserName>
+<CreateTime>%(time)s</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[%(content)s]]></Content>
+</xml>""" % {'time': str(time.time())}
 		xml_data = cElementTree.fromstring(request.stream.read())
 		msgtype = xml_data.find("MsgType").text
+		openid = xml_data.find("FromUserName").text
+		fromusername = xml_data.find("ToUserName").text
 		if msgtype.strip() == "event":
-			event = xml_data.find("Event").text
-			print(event)
+			if xml_data.find("Event").text.strip() == "subscribe":
+				content = """欢迎关注运维微信
+				请直接回复邮箱地址绑定
+				"""
+				return make_response(msg % {'openid':openid, 'devid': fromusername, 'content': content})
+		return "ok"
+		"""
 		openid = xml_data.find("FromUserName").text
 
 		content = xml_data.find("Content").text
@@ -54,10 +66,10 @@ def index():
 		print(openid)
 		print(msgtype)
 		print(content)
-
+		"""
 
 
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=8080, debug=True)

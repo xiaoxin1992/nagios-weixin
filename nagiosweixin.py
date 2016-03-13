@@ -34,7 +34,10 @@ def get_openid(openid_token):
 
 
 @file_check
-def create_menu(path, menu_token):
+def create_menu(path, menu_token, menutype="add"):
+	delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s" % menu_token
+	if menutype == "delete":
+		return get(delete_url, timeout=20).json()
 	menu_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % menu_token
 	with open(path, 'r') as f:
 		menu_template = f.read()
@@ -52,7 +55,14 @@ def get_wx_server_ip(path, wx_token):
 			f.write(dumps(server_list['ip_list']))
 			f.flush()
 
-print(create_menu(path=menu_path, menu_token=token))
+
+def get_user_info(openid, user_token=token):
+	user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % \
+		(user_token, openid)
+	re_info = get(user_info_url, timeout=20).json()
+	return re_info
+
+#print(create_menu(path=menu_path, menu_token=token, menutype='delete'))
 #get_wx_server_ip(path="./conf/wx_server_ip.txt", wx_token=token)
 """
 
