@@ -38,24 +38,22 @@ def index():
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
 	else:
-		msg = """
-		<xml>
+		msg = """<xml>
 <ToUserName><![CDATA[%(openid)s]]></ToUserName>
 <FromUserName><![CDATA[%(devid)s]]></FromUserName>
 <CreateTime>%(time)s</CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
 <Content><![CDATA[%(content)s]]></Content>
-</xml>""" % {'time': str(time.time())}
+</xml>"""
 		xml_data = cElementTree.fromstring(request.stream.read())
 		msgtype = xml_data.find("MsgType").text
 		openid = xml_data.find("FromUserName").text
 		fromusername = xml_data.find("ToUserName").text
+		now_time = str(time.time())
 		if msgtype.strip() == "event":
 			if xml_data.find("Event").text.strip() == "subscribe":
-				content = """欢迎关注运维微信
-				请直接回复邮箱地址绑定
-				"""
-				return make_response(msg % {'openid':openid, 'devid': fromusername, 'content': content})
+				content = """欢迎关注运维微信,请直接回复邮箱地址绑定"""
+				return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 		return "ok"
 		"""
 		openid = xml_data.find("FromUserName").text
