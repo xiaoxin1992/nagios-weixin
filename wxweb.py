@@ -42,29 +42,9 @@ def index():
 	else:
 		print("post start")
 		xml_data = cElementTree.fromstring(request.stream.read())
-		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
-			if xml_data.find('ToUserName').text.strip() == tousername:
-				url = "session/%s" % xml_data.find('FromUserName').text.strip()
-				redirect(url_for(url))
-		return "ok"
-
-@app.route("/session/<openid>", methods=['GET','POST'])
-def wxsession(openid):
-	session['openid'] = openid
-	print(session)
-	return "ok"
+		print(xml_data)
 
 
-@app.route("/install", methods=['GET', 'POST'])
-def install():
-	print(session)
-	if request.method == "POST":
-		rec = request.stream.read()
-		return "h"
-		#return "邮箱地址是:%s,要绑定的微信ID为: %s" % (request.form.get('mail'), session.get('openid'))
-	return "<html><body><form action='' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
-		"<input type='submit' value='绑 定'></div></form>" \
-		"</body></html>"
 
 
 if __name__ == '__main__':
