@@ -103,7 +103,7 @@ def index():
 			mail_address = mail.strip()
 			read_data[mail_address] = openid
 			with open(wx_path, 'w+') as f:
-				f.write(json.dums(read_data))
+				f.write(json.dumps(read_data))
 				f.flush()
 			content = "绑定成功,可以收取消息"
 		else:
