@@ -42,8 +42,12 @@ def index():
 	else:
 		print("post start")
 		xml_data = cElementTree.fromstring(request.stream.read())
-		openid = xml_data.find("FromUserName").text
 		msgtype = xml_data.find("MsgType").text
+		if msgtype.strip() == "event":
+			event = xml_data.find("Event").text
+			print(event)
+		openid = xml_data.find("FromUserName").text
+
 		content = xml_data.find("Content").text
 		if msgtype != "text":
 			return "fail"
