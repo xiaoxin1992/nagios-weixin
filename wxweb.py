@@ -25,9 +25,18 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-	if request.method == "GET":
+	openid = ""
+	if request.method == "POST":
+		print("post start")
+		xml_data = cElementTree.fromstring(request.stream.read())
+		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
+			if xml_data.find('ToUserName').text.strip() == tousername:
+				openid = xml_data.find('FromUserName').text.strip()
+	else:
 		if request.remote_addr.strip() not in get_ip():
-			return "滚犊子!"
+			return "<html><body><form action='install' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
+					"<input type='submit' value='绑 定'><input type='text',name='openid' value=%s>" \
+					"</div></form></body></html>" % openid
 		signature = request.args.get('signature')
 		echostr = request.args.get('echostr')
 		timestamp = request.args.get('timestamp')
@@ -37,15 +46,6 @@ def index():
 		data = sorted([token, timestamp, nonce])
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
-	else:
-		print("post start")
-		xml_data = cElementTree.fromstring(request.stream.read())
-		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
-			if xml_data.find('ToUserName').text.strip() == tousername:
-				return "<html><body><form action='install' method='post'><div>邮箱地址:<input type='text' name='mail'>" \
-					"<input type='submit' value='绑 定'><input type='text',name='openid' value=%s>" \
-					"</div></form></body></html>" % xml_data.find('FromUserName').text.strip()
-		return
 
 
 @app.route("/install", methods=['GET', 'POST'])
