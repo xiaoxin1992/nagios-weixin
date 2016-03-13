@@ -97,7 +97,7 @@ def index():
 		if check_mail(mail):
 			read_data = {}
 			if os.path.exists(wx_path):
-				with open(wx_path,'r') as f:
+				with open(wx_path, 'r') as f:
 					read_data = f.read()
 			read_data[mail] = openid
 			with open(wx_path, 'w+') as f:
