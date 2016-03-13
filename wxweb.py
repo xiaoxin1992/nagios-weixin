@@ -51,12 +51,12 @@ def index():
 @app.route("/session/<openid>", methods=['GET','POST'])
 def wxsession(openid):
 	session['openid'] = openid
+	print(session)
 	return "ok"
 
 @app.route("/install", methods=['GET', 'POST'])
 def install():
-	test1 = "aadb"
-	print(g.get('test1'))
+	print(session)
 	if request.method == "POST":
 		rec = request.stream.read()
 		return "h"
