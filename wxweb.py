@@ -43,7 +43,6 @@ def check_mail(data):
 				'win'
 	]
 	split_data = data.strip().split('@')
-	print(split_data)
 	if len(split_data) != 2 or split_data[0] == "":
 		return False
 	web_site = split_data[1].split('.')
@@ -99,7 +98,8 @@ def index():
 			if os.path.exists(wx_path):
 				with open(wx_path, 'r') as f:
 					read_data = f.read()
-			read_data[mail] = openid
+			mail_address = mail.strip()
+			read_data[mail_address] = openid
 			with open(wx_path, 'w+') as f:
 				f.write(json.dums(read_data))
 				f.flush()
