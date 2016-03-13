@@ -25,9 +25,9 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-	if request.remote_addr.strip() not in get_ip():
-		return "滚犊子!"
 	if request.method == "GET":
+		if request.remote_addr.strip() not in get_ip():
+			return "滚犊子!"
 		signature = request.args.get('signature')
 		echostr = request.args.get('echostr')
 		timestamp = request.args.get('timestamp')
@@ -57,4 +57,4 @@ def install():
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=8080, debug=True)
+	app.run(host='0.0.0.0', port=80, debug=True)

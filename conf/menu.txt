@@ -3,7 +3,7 @@
         {
             "type": "view",
             "name": "绑定报警",
-            "url": "http://wiki.golet.me/install"
+            "url": "http://wiki.golet.me"
         },
         {
             "type": "view",
