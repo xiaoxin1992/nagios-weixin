@@ -43,7 +43,8 @@ def check_mail(data):
 				'win'
 	]
 	split_data = data.strip().split('@')
-	if len(split_data) != 2 and split_data[0] == "":
+	print(split_data)
+	if len(split_data) != 2 or split_data[0] == "":
 		return False
 	web_site = split_data[1].split('.')
 	if len(web_site) != 2 or web_site[1] not in website_set:
