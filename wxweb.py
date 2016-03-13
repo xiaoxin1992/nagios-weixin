@@ -25,7 +25,6 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 @app.route("/", methods=['GET'])
 def index():
-	return "hello"
 	if request.remote_addr.strip() not in get_ip():
 		return "滚犊子!"
 	if request.method == "GET":
