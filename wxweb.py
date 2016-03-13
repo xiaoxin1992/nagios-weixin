@@ -87,7 +87,7 @@ def index():
 				content = """欢迎关注运维微信,请直接回复邮箱地址绑定"""
 				return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 			elif xml_data.find("Event").text.strip() == "unsubscribe":
-				pass
+				return "ok"
 			else:
 				return "fail"
 		elif msgtype.strip() != "text":
