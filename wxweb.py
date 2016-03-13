@@ -38,6 +38,7 @@ def index():
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
 	else:
+		print("post start")
 		xml_data = cElementTree.fromstring(request.stream.read())
 		if xml_data.find('MsgType').text.strip() == "event" and xml_data.find('Event').text.strip() == "VIEW":
 			if xml_data.find('ToUserName').text.strip() == tousername:
