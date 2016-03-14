@@ -1,4 +1,4 @@
-接受nagios 信息发送到微信端
+#接受nagios 信息发送到微信端
 
 工作环境要求 python3.4+
 
@@ -6,7 +6,7 @@
 安装方法: pip install flask
 
 
-配置如下
+#配置如下
 1.
 访问：http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login地址
 用自己的微信账号扫码登录获取微信平台测试账号
@@ -37,12 +37,12 @@ wxweb.py 一下操作需要用到
  "mail_password": "aaaa"
 }
 
-参数作用:
+#参数作用:
 appid  开发者ID
 secret 开发者密码
 template 模板消息ID
 
-#如果邮箱没有绑定用户则使用下面参数邮件发送
+如果邮箱没有绑定用户则使用下面参数邮件发送
 smtp_server 邮件服务器地址
 mail_sender  邮件账号
 mail_password 邮件密码
