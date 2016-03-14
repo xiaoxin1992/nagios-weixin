@@ -1,28 +1,15 @@
 #!  _*_ coding:utf-8
 from requests import get, post
 import datetime
-from json import loads, dumps
-import os
-import functools
 import datetime
-
-def file_check(fn):
-	functools.wraps(fn)
-
-	def check(*args, **kwargs):
-		if kwargs.get('path') is None or not os.path.exists(kwargs.get('path')):
-			raise FileNotFoundError("file does not exist %s" % kwargs.get('path'))
-		return fn(*args, **kwargs)
-	return check
+import sqllite
 
 
-@file_check
 class WeiXin:
-	def __init__(self, appid, secret, path):
+	def __init__(self, appid, secret):
 		self.__appid = appid
 		self.__secret = secret
 		self.__token = {}
-		self.token_path = path
 
 	@staticmethod
 	def check_error(data):
@@ -31,41 +18,37 @@ class WeiXin:
 			return False
 		return True
 
-	def save_token(self):
-		date = datetime.datetime.now()
-		self.__token['date'] = str(date)
-		f = open(self.token_path, 'w')
-		f.write(dumps(self.__token))
-		f.flush()
-		return self.__token['access_token']
-
 	def get_token(self):
+		db_data = sqllite.Database()
 		token_url = '''https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s''' % (
 			self.__appid, self.__secret)
-		token = get(token_url, timeout=20).json()
-		if self.check_error(token):
-			self.__token = token
-			return True
+		access_token = get(token_url, timeout=20).json()
+		if self.check_error(access_token):
+			self.__token = {
+				'token': access_token['access_token'],
+				'expire': access_token['expires_in'],
+				'date': str(datetime.datetime.now())
+			}
+			db_data.delete(tname_type="wx_token")
+			re_status = db_data.inster(s_type="wx_token", data=self.__token)
+			db_data.close()
+			if re_status:
+				return True
 		return False
 
 	def read_token(self):
 		date = datetime.datetime.now()
-		#f = open(self.token_path, 'r')
-		#try:
-		#	token = loads(f.readline())
-		#except Exception:
-		#	return False
-		#if (date - datetime.datetime.strptime(token.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds > token['expires_in']:
-		#	return False
-		#return token['access_token']
+		db_data = sqllite.Database()
+		data = db_data.select(s_type="wx_token")
+		if not data:
 
-appid = "wxe0a7ad56e757975f"
-secret = "d4624c36b6795d1d99dcf0547af5443d"
-token_path = "./conf/token.json"
-nagios_send = WeiXin(appid=appid, secret=secret, path=token_path)
-token = nagios_send.read_token()
-if not token:
-		print(nagios_send.get_token())
-
-		#	print("get token fail")
-#token = nagios_send.save_token()
+			if not self.get_token():
+				return False
+		if data.get('date'):
+			now_seconds = (date - datetime.datetime.strptime(data.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds
+			if now_seconds > int(data.get('expire')):
+				if not self.get_token():
+					return False
+		if not self.__token.get('token'):
+			self.__token['token'] = data.get('token').strip()
+		return self.__token.get('token')

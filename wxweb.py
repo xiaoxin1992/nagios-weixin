@@ -7,7 +7,6 @@ import time
 import sqllite
 
 
-
 def sha1(data):
 	m = hashlib.sha1()
 	m.update(data.encode('utf-8'))

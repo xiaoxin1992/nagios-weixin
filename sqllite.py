@@ -72,14 +72,14 @@ class Database(object):
 
 #{'test': 'xiaoxin', 'mail.c': '123', 'mailqq.com': '1234'}
 a = Database()
-data1 = {
-	'token': "OorCmxe7oEE__Dpqten1DgsKD5OGiDQJDqd969R1SjrKtLNW5N-JQHx7e54vDVuwLFfSPzi1mYtVGQ5RwPaEXMDRQJollbmNWy5w-GXRUCKfyNIeNHXacw8tcZEOhbGjKYYbAAAYMM"
-	,'expire': "7200",
-	'date': '2016-03-14 12:19:38.706255'
-}
+#data1 = {
+#	'token': "OorCmxe7oEE__Dpqten1DgsKD5OGiDQJDqd969R1SjrKtLNW5N-JQHx7e54vDVuwLFfSPzi1mYtVGQ5RwPaEXMDRQJollbmNWy5w-GXRUCKfyNIeNHXacw8tcZEOhbGjKYYbAAAYMM"
+#	,'expire': "7200",
+#	'date': '2016-03-14 12:19:38.706255'
+#}
 #a.inster(s_type="wx_token", data=data1)
 #a.delete('1234')
 #print(a.select())
 #print(a.update(rowstype='wxid', data='adcada12341'))
 #a.delete(tname_type="wx_token")
-#print(a.select(s_type="wx_token"))
+#print(a.select(s_type='mail',data="1234@123.cn"))

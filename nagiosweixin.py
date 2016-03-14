@@ -1,19 +1,29 @@
 #!  _*_ coding:utf-8
-from baseweixin import WeiXin, get, post, file_check,dumps
+from baseweixin import WeiXin, get, post
+from json import dumps, loads
 import sqllite
 import datetime
 import sys
+import os
 import getopt
+import ClassMail
 
 
-def get_openid(openid_token, check_def):
+def check_error(check_data):
+	if data.get('errcode'):
+		print(check_data)
+		return False
+	return True
+
+
+def get_openid(openid_token):
 	next_openid = ""
 	open_list = []
 	while True:
 		get_oepnid_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s" % \
 			(openid_token, next_openid)
 		user_openid = get(get_oepnid_url, timeout=20).json()
-		openid_check = check_def.check_error(user_openid)
+		openid_check = check_error(user_openid)
 		if not openid_check:
 			print(openid_check)
 			return False
@@ -24,7 +34,6 @@ def get_openid(openid_token, check_def):
 	return open_list
 
 
-@file_check
 def create_menu(path, menu_token, menutype="add"):
 	delete_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s" % menu_token
 	if menutype == "delete":
@@ -33,7 +42,7 @@ def create_menu(path, menu_token, menutype="add"):
 	with open(path, 'r') as f:
 		menu_template = f.read()
 	ret_post = post(menu_url, data=menu_template.encode('utf-8')).json()
-	if nagios_send.check_error(ret_post):
+	if check_error(ret_post):
 		return ret_post
 	return ret_post
 
@@ -41,7 +50,7 @@ def create_menu(path, menu_token, menutype="add"):
 def get_wx_server_ip(path, wx_token):
 	wx_server_url = "https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s" % wx_token
 	server_list = get(wx_server_url, timeout=20).json()
-	if nagios_send.check_error(server_list):
+	if check_error(server_list):
 		with open(path, 'w') as f:
 			f.write(dumps(server_list['ip_list']))
 			f.flush()
@@ -79,10 +88,10 @@ def send_template(send_data, send_token):
 		}
 	}
 	template_url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s" % send_token
-	return post(template_url, data=dumps(msg_template, ensure_ascii=False).encode('utf-8')).json()
+	return post(template_url, data=dumps(msg_template).encode('utf-8')).json()
 
 
-def get_user_info(email):
+def check_user_info(email):
 	db_self = sqllite.Database()
 	mail_address = db_self.select(s_type="mail", data=email)
 	db_self.close()
@@ -90,42 +99,62 @@ def get_user_info(email):
 		return mail_address[0]
 	return None
 
+
+def send_mail(maildata, server_info):
+	mail = ClassMail.EasySendmail()
+	mail.host = server_info.get('smtp_server')
+	mail.sender = server_info.get('mail_sender')
+	mail.passwd = server_info.get("mail_password")
+	mail.mail_to = maildata.get('touser')
+	mail.mail_sub = maildata.get('msg_title')
+	mail.content = maildata.get("msg_error")
+	mail.sendmail
 if __name__ == "__main__":
-	appid = "wxe0a7ad56e757975f"
-	secret = "d4624c36b6795d1d99dcf0547af5443d"
-	token_path = "./conf/token.json"
-	menu_path = './conf/menu.txt'
-	template_id = "6puShra9rwhBxNm12lQHj-TvFxoJbmKa_ONkemF4TV0"
+	if not os.path.exists('./conf/config.json'):
+		sys.exit(1)
+	with open('./conf/config.json', 'r') as f:
+		mail_data = f.read()
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hm:s:c:i:")
+		config = loads(mail_data)
 	except Exception as e:
 		print(e)
-		print("Usage: %s {-h help|-m mail address|-s subject|-c content|-i prompt massage}" % sys.argv[0])
+		sys.exit(1)
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "hm:s:c:")
+	except Exception as e:
+		print(e)
+		print("Usage: %s {-h help|-m mail address|-s subject|-c content}" % sys.argv[0])
 		sys.exit(1)
 	title = None
 	msg_error = None
-	msg_info = None
+	msg_info = "请注意查看"
 	for x in opts:
 		if x[0] == '-m':
-			openid = get_user_info(x[1])
+			openid = x[1]
 		elif x[0] == "-s":
 			title = x[1]
 		elif x[0] == "-c":
 			msg_error = x[1]
-		elif x[0] == "-i":
-			msg_info = x[1]
-	if not title and not msg_error and not msg_info:
-		print("Usage: %s {-h help|-m mail address|-s subject|-c content|-i prompt massage}" % sys.argv[0])
+	if not title and not msg_error:
+		print("Usage: %s {-h help|-m mail address|-s subject|-c content}" % sys.argv[0])
 		sys.exit(1)
 	time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 	data = {
 		'touser': openid,
-		'template_id': template_id,
+		'template_id': config.get('template_id'),
 		'url': '',
 		'msg_title': title,
 		'msg_error': msg_error,
 		'time': time,
 		'msg_info': msg_info
 	}
-	send_template(data, token)
-
+	wxopenid = check_user_info(openid)
+	if not wxopenid:
+		send_mail(data, config)
+		sys.exit(0)
+	data['touser'] = wxopenid
+	nagios = WeiXin(appid=config.get('appid'), secret=config.get('secret'))
+	token = nagios.read_token()
+	if token:
+		print("send message %s " % send_template(data, send_token=token).get('errmsg'))
+	sys.exit(0)
