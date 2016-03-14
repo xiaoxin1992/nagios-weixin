@@ -4,10 +4,8 @@ from xml.etree import cElementTree
 import hashlib
 import json
 import time
-import os
-import sys
 import sqllite
-token = "xiaoxin"
+
 
 
 def sha1(data):
@@ -60,6 +58,7 @@ def index():
 
 	if request.remote_addr.strip() not in get_ip():
 		return "权限不够"
+	token = "xiaoxin"
 	if request.method == "GET":
 		signature = request.args.get('signature')
 		echostr = request.args.get('echostr')
@@ -102,7 +101,7 @@ def index():
 		db_self = sqllite.Database()
 		if check_mail(mail):
 			mail_address = mail.strip()
-			if  db_self.select(s_type='mail', data=mail_address) or db_self.select(s_type='wxid', data=openid):
+			if not db_self.select(s_type='mail', data=mail_address) and not db_self.select(s_type='wxid', data=openid):
 				if db_self.inster(openid, mail_address):
 					content = "绑定成功,可以收取消息"
 				else:

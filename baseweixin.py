@@ -4,7 +4,7 @@ import datetime
 from json import loads, dumps
 import os
 import functools
-
+import datetime
 
 def file_check(fn):
 	functools.wraps(fn)
@@ -21,7 +21,7 @@ class WeiXin:
 	def __init__(self, appid, secret, path):
 		self.__appid = appid
 		self.__secret = secret
-		self.__token = None
+		self.__token = {}
 		self.token_path = path
 
 	@staticmethod
@@ -50,11 +50,22 @@ class WeiXin:
 
 	def read_token(self):
 		date = datetime.datetime.now()
-		f = open(self.token_path, 'r')
-		try:
-			token = loads(f.readline())
-		except Exception:
-			return False
-		if (date - datetime.datetime.strptime(token.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds > token['expires_in']:
-			return False
-		return token['access_token']
+		#f = open(self.token_path, 'r')
+		#try:
+		#	token = loads(f.readline())
+		#except Exception:
+		#	return False
+		#if (date - datetime.datetime.strptime(token.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds > token['expires_in']:
+		#	return False
+		#return token['access_token']
+
+appid = "wxe0a7ad56e757975f"
+secret = "d4624c36b6795d1d99dcf0547af5443d"
+token_path = "./conf/token.json"
+nagios_send = WeiXin(appid=appid, secret=secret, path=token_path)
+token = nagios_send.read_token()
+if not token:
+		print(nagios_send.get_token())
+
+		#	print("get token fail")
+#token = nagios_send.save_token()

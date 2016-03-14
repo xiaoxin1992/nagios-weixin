@@ -1,28 +1,19 @@
 #!  _*_ coding:utf-8
 from baseweixin import WeiXin, get, post, file_check,dumps
 import sqllite
-
-appid = "wxe0a7ad56e757975f"
-secret = "d4624c36b6795d1d99dcf0547af5443d"
-token_path = "./conf/token.json"
-menu_path = './conf/menu.txt'
-
-nagios_send = WeiXin(appid=appid, secret=secret, path=token_path)
-token = nagios_send.read_token()
-if not token:
-	if not nagios_send.get_token():
-		print("get token fail")
-	token = nagios_send.save_token()
+import datetime
+import sys
+import getopt
 
 
-def get_openid(openid_token):
+def get_openid(openid_token, check_def):
 	next_openid = ""
 	open_list = []
 	while True:
 		get_oepnid_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s" % \
 			(openid_token, next_openid)
-		openid = get(get_oepnid_url, timeout=20).json()
-		openid_check = nagios_send.check_error(openid)
+		user_openid = get(get_oepnid_url, timeout=20).json()
+		openid_check = check_def.check_error(user_openid)
 		if not openid_check:
 			print(openid_check)
 			return False
@@ -56,40 +47,85 @@ def get_wx_server_ip(path, wx_token):
 			f.flush()
 
 
-def get_user_info(openid, user_token=token):
+def get_user_info(user_openid, user_token):
 	user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % \
-		(user_token, openid)
+		(user_token, user_openid)
 	re_info = get(user_info_url, timeout=20).json()
 	return re_info
 
 
-def send_template(data,tokent):
+def send_template(send_data, send_token):
 	msg_template = {
-		'touser': data['touser'],
-		'template_id': data.get('template_id'),
-		'url': '',
+		'touser': send_data.get('touser'),
+		'template_id': send_data.get('template_id'),
+		'url': data.get('url'),
 		"data": {
 			"first": {
-				"value": data.get('msg_title'),
+				"value": send_data.get('msg_title'),
 				"color": "#173177"
 			},
 			"performance": {
-				"value": data.get('msg_error'),
+				"value": send_data.get('msg_error'),
 				"color": "#FF0033"
 			},
 			'time': {
-				"value": data.get('time'),
+				"value": send_data.get('time'),
 				"color": "#FF0033"
 			},
 			"remark": {
-				"value": data.get('msg_info'),
+				"value": send_data.get('msg_info'),
 				"color": "#173177"
 			}
 		}
 	}
-	template_url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s" % tokent
-	return post(template_url, data=dumps(msg_template, ensure_ascii=False)).json()
+	template_url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s" % send_token
+	return post(template_url, data=dumps(msg_template, ensure_ascii=False).encode('utf-8')).json()
 
-def get_user_info(mail):
+
+def get_user_info(email):
 	db_self = sqllite.Database()
-	db_self.select()
+	mail_address = db_self.select(s_type="mail", data=email)
+	db_self.close()
+	if mail_address:
+		return mail_address[0]
+	return None
+
+if __name__ == "__main__":
+	appid = "wxe0a7ad56e757975f"
+	secret = "d4624c36b6795d1d99dcf0547af5443d"
+	token_path = "./conf/token.json"
+	menu_path = './conf/menu.txt'
+	template_id = "6puShra9rwhBxNm12lQHj-TvFxoJbmKa_ONkemF4TV0"
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "hm:s:c:i:")
+	except Exception as e:
+		print(e)
+		print("Usage: %s {-h help|-m mail address|-s subject|-c content|-i prompt massage}" % sys.argv[0])
+		sys.exit(1)
+	title = None
+	msg_error = None
+	msg_info = None
+	for x in opts:
+		if x[0] == '-m':
+			openid = get_user_info(x[1])
+		elif x[0] == "-s":
+			title = x[1]
+		elif x[0] == "-c":
+			msg_error = x[1]
+		elif x[0] == "-i":
+			msg_info = x[1]
+	if not title and not msg_error and not msg_info:
+		print("Usage: %s {-h help|-m mail address|-s subject|-c content|-i prompt massage}" % sys.argv[0])
+		sys.exit(1)
+	time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+	data = {
+		'touser': openid,
+		'template_id': template_id,
+		'url': '',
+		'msg_title': title,
+		'msg_error': msg_error,
+		'time': time,
+		'msg_info': msg_info
+	}
+	send_template(data, token)
+
