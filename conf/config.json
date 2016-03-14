@@ -1,9 +1,6 @@
 {
-  "help info":"smtp_server  登录邮件服务的地址, mail_sender 登录账号, mail_password 登录密码",
-  "help wx info":"appid 微信开发者账号,secret 微信开发者账号密码,menu_path 微信菜单,template_id模板消息的模板ID",
   "appid":"aaaaa",
   "secret":"aaaa",
-  "menu_path":"/conf/menu.txt",
   "template_id":"6puShra9rwhBxNm12lQvFxoJbmKa_ONkemF4TV0",
   "smtp_server": "smtp.sina.com",
   "mail_sender": "aaaa@sina.com",
