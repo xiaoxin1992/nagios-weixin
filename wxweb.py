@@ -78,6 +78,7 @@ def index():
 <MsgType><![CDATA[text]]></MsgType>
 <Content><![CDATA[%(content)s]]></Content>
 </xml>"""
+
 		xml_data = cElementTree.fromstring(request.stream.read())
 		msgtype = xml_data.find("MsgType").text
 		openid = xml_data.find("FromUserName").text
@@ -88,7 +89,9 @@ def index():
 				content = """欢迎关注运维微信,请直接回复邮箱地址绑定"""
 				return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 			elif xml_data.find("Event").text.strip() == "unsubscribe":
-				return "ok"
+				db_self = sqllite.Database()
+				db_self.delete(openid)
+				db_self.close()
 			else:
 				return "fail"
 		elif msgtype.strip() != "text":
@@ -108,6 +111,7 @@ def index():
 				content = "您的微信已经绑定,无需在绑定"
 		else:
 			content = "请输入正确的邮箱格式"
+		db_self.close()
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 
 if __name__ == '__main__':
