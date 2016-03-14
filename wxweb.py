@@ -6,8 +6,9 @@ import json
 import time
 import os
 import sys
+import sqllite
 token = "xiaoxin"
-wx_path = "./conf/wxid_to_mail.json"
+
 
 def sha1(data):
 	m = hashlib.sha1()
@@ -94,24 +95,19 @@ def index():
 			content = "仅支持文本消息,回复邮箱地址直接绑定"
 			return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 		mail = xml_data.find("Content").text
+		db_self = sqllite.Database()
 		if check_mail(mail):
-			read_data = {}
-			if os.path.exists(wx_path):
-				with open(wx_path, 'r') as f:
-					data = f.read()
-				if data:
-					read_data = json.loads(data)
-			if openid not in read_data.values():
-				mail_address = mail.strip()
-				read_data[mail_address] = openid
-				with open(wx_path, 'w+') as f:
-					f.write(json.dumps(read_data))
-					f.flush()
-				content = "绑定成功,可以收取消息"
+			read_data = db_self.select()
+			mail_address = mail.strip()
+			if mail_address not in read_data.keys() and openid not in read_data.values():
+				if db_self.inster(openid,mail_address):
+					content = "绑定成功,可以收取消息"
+				else:
+					content = "绑定失败"
 			else:
 				content = "您的微信已经绑定,无需在绑定"
 		else:
-			content = "绑定失败,请输入正确的邮箱格式"
+			content = "请输入正确的邮箱格式"
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 
 if __name__ == '__main__':
