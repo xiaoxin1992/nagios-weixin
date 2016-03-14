@@ -9,12 +9,12 @@ class Database(object):
 		if 'wxid_to_mail' not in [x[0] for x in self.c.fetchall()]:
 			self.c.execute("CREATE TABLE wxid_to_mail(wxid char(128),mail char(128))")
 
-	def select(self):
-		self.c.execute("SELECT mail,wxid FROM wxid_to_mail")
-		select_data = {}
-		for x in self.c.fetchall():
-			select_data[x[0]] = x[1]
-		return select_data
+	def select(self, s_type, data):
+		if s_type.strip() == "wxid":
+			self.c.execute("SELECT mail FROM wxid_to_mail where wxid='%s'" % data)
+		elif s_type.strip() == "mail":
+			self.c.execute("SELECT wxid FROM wxid_to_mail where mail='%s'" % data)
+		return [x[0] for x in self.c.fetchall()]
 
 	def inster(self, wxid, mail):
 		self.c.execute("INSERT INTO wxid_to_mail VALUES ('%s','%s')" % (wxid, mail))
@@ -29,7 +29,6 @@ class Database(object):
 		return False
 
 	def update(self, rowstype, data):
-
 		if rowstype.strip() == "wxid" and data:
 			self.c.execute("update wxid_to_mail set wxid='%s'" % data)
 		elif rowstype.strip() == "mail" and data:

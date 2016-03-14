@@ -92,6 +92,7 @@ def index():
 				db_self = sqllite.Database()
 				db_self.delete(openid)
 				db_self.close()
+				return "ok"
 			else:
 				return "fail"
 		elif msgtype.strip() != "text":
@@ -100,10 +101,9 @@ def index():
 		mail = xml_data.find("Content").text
 		db_self = sqllite.Database()
 		if check_mail(mail):
-			read_data = db_self.select()
 			mail_address = mail.strip()
-			if mail_address not in read_data.keys() and openid not in read_data.values():
-				if db_self.inster(openid,mail_address):
+			if  db_self.select(s_type='mail', data=mail_address) or db_self.select(s_type='wxid', data=openid):
+				if db_self.inster(openid, mail_address):
 					content = "绑定成功,可以收取消息"
 				else:
 					content = "绑定失败"

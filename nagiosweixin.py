@@ -1,6 +1,6 @@
 #!  _*_ coding:utf-8
 from baseweixin import WeiXin, get, post, file_check,dumps
-
+import sqllite
 
 appid = "wxe0a7ad56e757975f"
 secret = "d4624c36b6795d1d99dcf0547af5443d"
@@ -62,19 +62,34 @@ def get_user_info(openid, user_token=token):
 	re_info = get(user_info_url, timeout=20).json()
 	return re_info
 
-#print(create_menu(path=menu_path, menu_token=token, menutype='delete'))
-#get_wx_server_ip(path="./conf/wx_server_ip.txt", wx_token=token)
-"""
 
-def kf_message(self, tokent, openid, message, msgtype='text'):
-		send_url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s" % tokent
-		message_template = {
-			"touser": openid,
-			"msgtype": msgtype,
-			"text": {
-				"content": message
+def send_template(data,tokent):
+	msg_template = {
+		'touser': data['touser'],
+		'template_id': data.get('template_id'),
+		'url': '',
+		"data": {
+			"first": {
+				"value": data.get('msg_title'),
+				"color": "#173177"
+			},
+			"performance": {
+				"value": data.get('msg_error'),
+				"color": "#FF0033"
+			},
+			'time': {
+				"value": data.get('time'),
+				"color": "#FF0033"
+			},
+			"remark": {
+				"value": data.get('msg_info'),
+				"color": "#173177"
 			}
 		}
-		return requests.post(send_url, data=json.dump(message_template, ensure_ascii=False)).json()
+	}
+	template_url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s" % tokent
+	return post(template_url, data=dumps(msg_template, ensure_ascii=False)).json()
 
-"""
+def get_user_info(mail):
+	db_self = sqllite.Database()
+	db_self.select()
