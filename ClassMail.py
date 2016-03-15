@@ -56,7 +56,7 @@ Subject: {2}
 			smtpobj.quit()
 		except smtplib.SMTPAuthenticationError as error:
 			print(error)
-			print('认证失败,请核对用户名和密码.')
+			print('auth fail')
 		except smtplib.SMTPException as error:
 			print(error)
 			print('Error: unable to send mail !')

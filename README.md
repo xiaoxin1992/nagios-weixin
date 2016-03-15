@@ -7,11 +7,12 @@
 安装方法: pip install flask
 安装方法: pip install requests
 
+###操作系统 Centos6.7 x86_64
 
 
 ###Python3.4.4安装
 >
-操作系统 Centos6.7 x86_64
+
 >
 下载安装包
 >
