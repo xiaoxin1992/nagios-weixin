@@ -1,9 +1,12 @@
 import sqlite3
+import os
+import sys
 
 
 class Database(object):
 	def __init__(self):
-		self.conn = sqlite3.connect("./conf/userinfo.db")
+		self.path = os.path.dirname(sys.argv[0]) + '/conf/userinfo.db'
+		self.conn = sqlite3.connect(self.path)
 		self.c = self.conn.cursor()
 		self.c.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
 		self.table_name = [x[0] for x in self.c.fetchall()]
@@ -69,17 +72,3 @@ class Database(object):
 
 	def close(self):
 		self.conn.close()
-
-#{'test': 'xiaoxin', 'mail.c': '123', 'mailqq.com': '1234'}
-a = Database()
-#data1 = {
-#	'token': "OorCmxe7oEE__Dpqten1DgsKD5OGiDQJDqd969R1SjrKtLNW5N-JQHx7e54vDVuwLFfSPzi1mYtVGQ5RwPaEXMDRQJollbmNWy5w-GXRUCKfyNIeNHXacw8tcZEOhbGjKYYbAAAYMM"
-#	,'expire': "7200",
-#	'date': '2016-03-14 12:19:38.706255'
-#}
-#a.inster(s_type="wx_token", data=data1)
-#a.delete('1234')
-#print(a.select())
-#print(a.update(rowstype='wxid', data='adcada12341'))
-#a.delete(tname_type="wx_token")
-#print(a.select(s_type='mail',data="1234@123.cn"))

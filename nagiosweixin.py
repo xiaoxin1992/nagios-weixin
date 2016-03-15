@@ -97,9 +97,10 @@ def send_mail(maildata, server_info):
 	mail.content = maildata.get("msg_error")
 	mail.sendmail
 if __name__ == "__main__":
-	if not os.path.exists('./conf/config.json'):
+	path = os.path.dirname(sys.argv[0]) + '/conf/config.json'
+	if not os.path.exists(path):
 		sys.exit(1)
-	with open('./conf/config.json', 'r') as f:
+	with open(path, 'r') as f:
 		mail_data = f.read()
 	try:
 		config = loads(mail_data)
