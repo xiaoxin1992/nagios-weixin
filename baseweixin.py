@@ -1,4 +1,4 @@
-#!  _*_ coding:utf-8
+#  _*_ coding:utf-8
 from requests import get, post
 import datetime
 import datetime

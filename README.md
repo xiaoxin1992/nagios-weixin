@@ -3,10 +3,38 @@
 ###环境要求
 工作环境要求 python3.4+
 
-模块要求: flask
+模块要求: flask,requests
 安装方法: pip install flask
+安装方法: pip install requests
 
 
+
+###Python3.4.4安装
+>
+操作系统 Centos6.7 x86_64
+>
+下载安装包
+>
+[root@centos6-test-1 nagios-weixin]# wget https://www.python.org/ftp/python/3.4.4/Python-3.4.4.tgz
+>
+编译安装
+>
+[root@centos6-test-1 nagios-weixin]tar zxf Python-3.4.4.tgz
+>
+[root@centos6-test-1 nagios-weixin]# cd Python-3.4.4
+>
+[root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
+>
+[root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
+>
+[root@centos6-test-1 Python-3.4.4]# make && make install
+>
+[root@centos6-test-1 Python-3.4.4]#ln -s /usr/local/python3.4.4 /usr/local/python3
+>
+[root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install flask
+>
+[root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install requests
+>
 ###配置如下
 1.
 >
@@ -36,7 +64,7 @@ wxweb.py 一下操作需要用到
 >
 添加模板信息
 >
-模板标题:故障通报通知	
+模板标题:故障通报通知
 >
 模板内容:
 >
@@ -86,7 +114,7 @@ mail_password 邮件密码
 >
 可以使用下面命令测试
 >
- python nagiosweixin.py  -m aaa@sina.com -s test -c "test ok"
+ /usr/local/python3/bin/python3 nagiosweixin.py  -m aaa@sina.com -s test -c "test ok"
 >
 方式结果:
 >

@@ -1,4 +1,4 @@
-#!  _*_ coding:utf-8
+#  _*_ coding:utf-8
 from baseweixin import WeiXin, get, post
 from json import dumps, loads
 import sqllite

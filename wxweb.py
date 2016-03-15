@@ -1,4 +1,4 @@
-#!  _*_ coding:utf-8
+#  _*_ coding:utf-8
 from flask import Flask, request, make_response
 from xml.etree import cElementTree
 import hashlib
