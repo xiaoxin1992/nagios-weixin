@@ -5,7 +5,7 @@ import sys
 
 class Database(object):
 	def __init__(self):
-		self.path = os.path.dirname(sys.argv[0]) + '/conf/userinfo.db'
+		self.path = os.path.join(os.path.dirname(sys.argv[0]), 'conf/userinfo.db')
 		self.conn = sqlite3.connect(self.path)
 		self.c = self.conn.cursor()
 		self.c.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
