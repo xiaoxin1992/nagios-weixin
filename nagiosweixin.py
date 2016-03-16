@@ -108,10 +108,10 @@ if __name__ == "__main__":
 		print(e)
 		sys.exit(1)
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hm:s:c:")
+		opts, args = getopt.getopt(sys.argv[1:], "hm:s:")
 	except Exception as e:
 		print(e)
-		print("Usage: %s {-h help|-m mail address|-s subject|-c content}" % sys.argv[0])
+		print("Usage: %s {-h help|-m mail address|-s subject}" % sys.argv[0])
 		sys.exit(1)
 	title = None
 	msg_error = None
@@ -121,10 +121,9 @@ if __name__ == "__main__":
 			openid = x[1]
 		elif x[0] == "-s":
 			title = x[1]
-		elif x[0] == "-c":
-			msg_error = x[1]
+	msg_error = sys.stdin.read()
 	if not title and not msg_error:
-		print("Usage: %s {-h help|-m mail address|-s subject|-c content}" % sys.argv[0])
+		print("Usage: %s {-h help|-m mail address|-s subject}" % sys.argv[0])
 		sys.exit(1)
 	time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 	data = {
