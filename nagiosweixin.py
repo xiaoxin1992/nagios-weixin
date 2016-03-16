@@ -97,7 +97,7 @@ def send_mail(maildata, server_info):
 	mail.content = maildata.get("msg_error")
 	mail.sendmail
 if __name__ == "__main__":
-	path = os.path.dirname(sys.argv[0]) + '/conf/config.json'
+	path = os.path.join(os.path.dirname(sys.argv[0]),'/conf/config.json')
 	if not os.path.exists(path):
 		sys.exit(1)
 	with open(path, 'r') as f:
