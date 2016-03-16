@@ -135,13 +135,15 @@ if __name__ == "__main__":
 		'time': time,
 		'msg_info': msg_info
 	}
-	wxopenid = check_user_info(openid)
-	if not wxopenid:
-		send_mail(data, config)
-		sys.exit(0)
-	data['touser'] = wxopenid
-	nagios = WeiXin(appid=config.get('appid'), secret=config.get('secret'))
-	token = nagios.read_token()
-	if token:
-		print("send message %s " % send_template(data, send_token=token).get('errmsg'))
+	for x in openid.split(','):
+		wxopenid = check_user_info(x)
+		data['touser'] = x
+		if not wxopenid:
+			send_mail(data, config)
+			sys.exit(0)
+		data['touser'] = wxopenid
+		nagios = WeiXin(appid=config.get('appid'), secret=config.get('secret'))
+		token = nagios.read_token()
+		if token:
+			print("send message %s " % send_template(data, send_token=token).get('errmsg'))
 	sys.exit(0)
