@@ -79,6 +79,8 @@ def index():
 		data = sorted([token, timestamp, nonce])
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
+		else:
+			print("fail")
 	else:
 		msg = """<xml>
 <ToUserName><![CDATA[%(openid)s]]></ToUserName>
