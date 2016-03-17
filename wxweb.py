@@ -80,7 +80,7 @@ def index():
 		if sha1(''.join(data)) == signature.strip():
 			return echostr.strip()
 		else:
-			print("fail")
+			return "fail"
 	else:
 		msg = """<xml>
 <ToUserName><![CDATA[%(openid)s]]></ToUserName>
