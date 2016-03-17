@@ -126,4 +126,4 @@ def index():
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=80, debug=False)
