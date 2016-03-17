@@ -99,7 +99,7 @@ def index():
 				return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 			elif xml_data.find("Event").text.strip() == "unsubscribe":
 				db_self = sqllite.Database()
-				db_self.delete(openid)
+				db_self.delete(wxid=openid)
 				db_self.close()
 				return "ok"
 			else:

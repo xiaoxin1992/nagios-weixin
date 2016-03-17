@@ -41,7 +41,6 @@ class WeiXin:
 		db_data = sqllite.Database()
 		data = db_data.select(s_type="wx_token")
 		if not data:
-
 			if not self.get_token():
 				return False
 		if data.get('date'):
