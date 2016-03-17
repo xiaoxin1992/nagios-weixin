@@ -5,6 +5,8 @@ import hashlib
 import json
 import time
 import sqllite
+from os.path import dirname, join
+from sys import argv
 
 
 def sha1(data):
@@ -14,7 +16,16 @@ def sha1(data):
 
 
 def get_ip():
-	path = "./conf/wx_server_ip.txt"
+
+	path = join(dirname(argv[0]), "conf/wx_server_ip.txt")
+	with open(path, 'r') as f:
+		data = f.read()
+	return json.loads(data)
+
+
+def get_token():
+
+	path = join(dirname(argv[0]), "conf/token.json")
 	with open(path, 'r') as f:
 		data = f.read()
 	return json.loads(data)
@@ -57,7 +68,7 @@ def index():
 
 	if request.remote_addr.strip() not in get_ip():
 		return "权限不够"
-	token = "xiaoxin"
+	token = get_token()['token']
 	if request.method == "GET":
 		signature = request.args.get('signature')
 		echostr = request.args.get('echostr')
