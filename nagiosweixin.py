@@ -137,10 +137,10 @@ if __name__ == "__main__":
 	}
 	for x in openid.split(','):
 		wxopenid = check_user_info(x)
-		data['touser'] = x
 		if not wxopenid:
+			data['touser'] = x
 			send_mail(data, config)
-			sys.exit(0)
+			continue
 		data['touser'] = wxopenid
 		nagios = WeiXin(appid=config.get('appid'), secret=config.get('secret'))
 		token = nagios.read_token()
