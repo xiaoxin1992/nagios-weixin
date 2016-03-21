@@ -37,15 +37,17 @@ class WeiXin:
 		return False
 
 	def read_token(self):
-		date = datetime.datetime.now()
+		new_time = datetime.datetime.now()
 		db_data = sqllite.Database()
 		data = db_data.select(s_type="wx_token")
 		if not data:
 			if not self.get_token():
 				return False
 		if data.get('date'):
-			now_seconds = (date - datetime.datetime.strptime(data.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds
-			if now_seconds > int(data.get('expire')):
+			diff_time_day = (new_time - datetime.datetime.strptime(data.get('date'), '%Y-%m-%d %H:%M:%S.%f')).days
+			diff_time_seconds = (new_time - datetime.datetime.strptime(data.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds
+			diff_seconds = diff_time_day * 24 * 3600 + diff_time_seconds
+			if diff_seconds > int(data.get('expire')):
 				if not self.get_token():
 					return False
 		if not self.__token.get('token'):
