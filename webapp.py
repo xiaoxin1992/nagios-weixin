@@ -4,9 +4,12 @@ from xml.etree import cElementTree
 import hashlib
 import json
 import time
+import os
+import sys
 from wx_lib import sqllite
 from os.path import dirname, join
 from sys import argv
+from wx_lib.wxconfig import DBfile
 
 
 def sha1(data):
@@ -98,8 +101,9 @@ def index():
 			content = "仅支持文本消息,回复邮箱地址直接绑定"
 			return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 		mail = xml_data.find("Content").text
-		db_self = sqllite.Database()
 		if check_mail(mail):
+			DBfile.path = os.path.join(os.path.dirname(sys.argv[0]), 'conf/userinfo.db')
+			db_self = sqllite.Database()
 			mail_address = mail.strip()
 			if not db_self.select(s_type='mail', data=mail_address) and not db_self.select(s_type='wxid', data=openid):
 				if db_self.inster(openid, mail_address):
@@ -108,9 +112,9 @@ def index():
 					content = "绑定失败"
 			else:
 				content = "您的微信已经绑定,无需在绑定"
+			db_self.close()
 		else:
 			content = "请输入正确的邮箱格式"
-		db_self.close()
 		return make_response(msg % {'openid': openid, 'devid': fromusername, 'time': now_time, 'content': content})
 
 if __name__ == '__main__':
