@@ -53,14 +53,13 @@ Subject: {2}
 			smtpobj = smtplib.SMTP(self.host, self.port)
 			smtpobj.login(self.sender, self.passwd)
 			smtpobj.sendmail(self.sender, self.mail_to, self.message.encode('GBK'))
-			print('Successfully send email !')
+			log_write.log("send mail to {0} ok".format(self.mail_to))
 			smtpobj.quit()
 		except smtplib.SMTPAuthenticationError as error:
-			print(error)
-			print('auth fail')
+			log_write.log(error)
+			log_write.log('auth fail')
 		except smtplib.SMTPException as error:
-			print(error)
-			print('Error: unable to send mail !')
+			log_write.log(error)
+			log_write.log('Error: unable to send mail !')
 		except Exception as e:
-			print(e)
-		log_write("send mail to {0} ok".format(self.mail_to))
+			log_write.log(e)
