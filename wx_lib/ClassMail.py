@@ -2,6 +2,7 @@
 import smtplib
 from email.mime.text import MIMEText
 import socket
+from wx_lib import log_write
 
 
 class EasySendmail:
@@ -62,3 +63,4 @@ Subject: {2}
 			print('Error: unable to send mail !')
 		except Exception as e:
 			print(e)
+		log_write("send mail to {0} ok".format(self.mail_to))
