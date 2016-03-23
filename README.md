@@ -39,8 +39,7 @@
 ###配置如下
 1.
 >
-访问：http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login地址
-用自己的微信账号扫码登录获取微信平台测试账号
+可以使用微信测试公共号,如果有企业号,可以直接使用
 
 2.
 >
