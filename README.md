@@ -46,11 +46,11 @@
 >
 确保机器有外网IP
 >
-运行 wxweb.py
+运行 webapp.py
 >
-wxweb.py 一下操作需要用到
+webapp.py 一下操作需要用到,webapp.py默认使用的是80端口
 >
-	接口验证，微信端发送邮箱到wxweb.py 收到消息后，存入数据供发送消息调用
+	接口验证，微信端发送邮箱到webapp.py 收到消息后，存入数据供发送消息调用
 >
 	微信和邮箱绑定完成后，则可以关闭，发送消息不需要此程序
 >
@@ -90,7 +90,6 @@ wxweb.py 一下操作需要用到
 >
 }
 >
-
 ###参数作用:
 >
 appid  开发者ID
@@ -108,6 +107,15 @@ mail_sender  邮件账号
 >
 mail_password 邮件密码
 >
+配置cofig/token.json文件
+>
+{
+>
+  "token": "xiaoixn"
+>
+}
+token 微信跟服务器,认证的密码
+>
 
 6.
 >
@@ -115,7 +123,7 @@ mail_password 邮件密码
 >
 可以使用下面命令测试
 >
- /usr/local/python3/bin/python3 nagiosweixin.py  -m aaa@sina.com -s test -c "test ok"
+ echo "test"|/usr/local/python3/bin/python3 app.py  -m aaa@sina.com -s test
 >
 方式结果:
 >
@@ -130,4 +138,22 @@ mail_password 邮件密码
 绑定微信,扫描二维码关注公共号后,发送直接回复邮件地址,则可以绑定成功,一个邮件只能绑定一个微信号,一个微信号也只能绑定一个邮箱账号
 >
 8.配置nagios
+>
+commands.cfg文件增加以下内容
+>
+define command{
+>
+    command_name wx_host_mail
+>
+    command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n主机: $HOSTALIAS$\n状态:$HOSTSTATE$\nIP地址: $HOSTADDRESS$\n时间: $LONGDATETIME$\n信息:\n$HOSTOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "主机报警: $HOSTNAME$ is $HOSTSTATE$"
+>
+}
+>
+define command{
+>
+    command_name wx_server_mail
+>
+    command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n服务: $SERVICEDESC$\n主机: $HOSTALIAS$\nIP地>址: $HOSTADDRESS$\n状态: $SERVICESTATE$\n时间: $LONGDATETIME$\n信息:\n$SERVICEOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "服务报警: $HOSTNAME$ is $HOSTSTATE$"
+>
+}
 >
