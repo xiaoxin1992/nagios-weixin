@@ -44,6 +44,8 @@ class WxBase:
 		if not data:
 			if not self.__get_token():
 				return False
+			else:
+				return self.__token
 		diff_time_day = (new_time - datetime.datetime.strptime(data.get('date'), '%Y-%m-%d %H:%M:%S.%f')).days
 		diff_time_seconds = (new_time - datetime.datetime.strptime(data.get('date'), '%Y-%m-%d %H:%M:%S.%f')).seconds
 		diff_seconds = diff_time_day * 24 * 3600 + diff_time_seconds
