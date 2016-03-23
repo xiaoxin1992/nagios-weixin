@@ -16,25 +16,25 @@
 >
 下载安装包
 >
-[root@centos6-test-1 nagios-weixin]# wget https://www.python.org/ftp/python/3.4.4/Python-3.4.4.tgz
+    [root@centos6-test-1 nagios-weixin]# wget https://www.python.org/ftp/python/3.4.4/Python-3.4.4.tgz
 >
 编译安装
 >
-[root@centos6-test-1 nagios-weixin]tar zxf Python-3.4.4.tgz
+    [root@centos6-test-1 nagios-weixin]tar zxf Python-3.4.4.tgz
 >
-[root@centos6-test-1 nagios-weixin]# cd Python-3.4.4
+    [root@centos6-test-1 nagios-weixin]# cd Python-3.4.4
 >
-[root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
+    [root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
 >
-[root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
+    [root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
 >
-[root@centos6-test-1 Python-3.4.4]# make && make install
+    [root@centos6-test-1 Python-3.4.4]# make && make install
 >
-[root@centos6-test-1 Python-3.4.4]#ln -s /usr/local/python3.4.4 /usr/local/python3
+    [root@centos6-test-1 Python-3.4.4]#ln -s /usr/local/python3.4.4 /usr/local/python3
 >
-[root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install flask
+    [root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install flask
 >
-[root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install requests
+    [root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install requests
 >
 ###配置如下
 1.
@@ -59,62 +59,63 @@ webapp.py 一下操作需要用到,webapp.py默认使用的是80端口
 >
 配置接口信息
 >
-填写接口配置信息，此信息需要你有自己的服务器资源，填写的URL需要正确响应微信发送的Token验证
+    填写接口配置信息，此信息需要你有自己的服务器资源，填写的URL需要正确响应微信发送的Token验证
 >
 4.
 >
 添加模板信息
 >
-模板标题:故障通报通知
+    模板标题:故障通报通知
 >
 模板内容:
 >
-{{first.DATA}} 故障现象：{{performance.DATA}} 故障时间：{{time.DATA}} {{remark.DATA}}
+    {{first.DATA}} 故障现象：{{performance.DATA}} 故障时间：{{time.DATA}} {{remark.DATA}}
 >
 5.
 >
 配置cofig/config.json文件
 >
-{
- "appid": "aaaaa",
+    {
+    "appid": "aaaaa",
 >
- "secret": "aaaaa",
+    "secret": "aaaaa",
 >
- "template_id":"6puShra9rwhBxNm12lQvFxoJbmKa_ONkemF4TV0",
+    "template_id":"6puShra9rwhBxNm12lQvFxoJbmKa_ONkemF4TV0",
 >
- "smtp_server": "smtp.sina.com",
+    "smtp_server": "smtp.sina.com",
 >
- "mail_sender": "aaa@sina.com",
+    "mail_sender": "aaa@sina.com",
 >
- "mail_password": "aaaa"
+    "mail_password": "aaaa"
 >
-}
+    }
 >
-###参数作用:
+    ###参数作用:
 >
-appid  开发者ID
+    appid  开发者ID
 >
-secret 开发者密码
+    secret 开发者密码
 >
-template 模板消息ID
+    template 模板消息ID
 >
 >
-如果邮箱没有绑定用户则使用下面参数邮件发送
+    如果邮箱没有绑定用户则使用下面参数邮件发送
 >
-smtp_server 邮件服务器地址
+    smtp_server 邮件服务器地址
 >
-mail_sender  邮件账号
+    mail_sender  邮件账号
 >
-mail_password 邮件密码
+    mail_password 邮件密码
 >
-配置cofig/token.json文件
+    配置cofig/token.json文件
 >
-{
+        {
 >
-  "token": "xiaoixn"
+            "token": "xiaoixn"
 >
-}
-token 微信跟服务器,认证的密码
+        }
+>
+        token 微信跟服务器,认证的密码
 >
 
 6.
@@ -123,7 +124,7 @@ token 微信跟服务器,认证的密码
 >
 可以使用下面命令测试
 >
- echo "test"|/usr/local/python3/bin/python3 app.py  -m aaa@sina.com -s test
+    echo "test"|/usr/local/python3/bin/python3 app.py  -m aaa@sina.com -s test
 >
 方式结果:
 >
@@ -135,27 +136,27 @@ token 微信跟服务器,认证的密码
 >
 绑定
 >
-绑定微信,扫描二维码关注公共号后,发送直接回复邮件地址,则可以绑定成功,一个邮件只能绑定一个微信号,一个微信号也只能绑定一个邮箱账号
+    绑定微信,扫描二维码关注公共号后,发送直接回复邮件地址,则可以绑定成功,一个邮件只能绑定一个微信号,一个微信号也只能绑定一个邮箱账号
 >
 8.配置nagios
 >
-commands.cfg文件增加以下内容
+    commands.cfg文件增加以下内容
 >
-define command{
+    define command{
 >
-    command_name wx_host_mail
+        command_name wx_host_mail
 >
-    command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n主机: $HOSTALIAS$\n状态:$HOSTSTATE$\nIP地址: $HOSTADDRESS$\n时间: $LONGDATETIME$\n信息:\n$HOSTOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "主机报警: $HOSTNAME$ is $HOSTSTATE$"
+        command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n主机: $HOSTALIAS$\n状态:$HOSTSTATE$\nIP地址: $HOSTADDRESS$\n时间: $LONGDATETIME$\n信息:\n$HOSTOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "主机报警: $HOSTNAME$ is $HOSTSTATE$"
 >
-}
+    }
 >
-define command{
+    define command{
 >
-    command_name wx_server_mail
+        command_name wx_server_mail
 >
-    command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n服务: $SERVICEDESC$\n主机: $HOSTALIAS$\nIP地>址: $HOSTADDRESS$\n状态: $SERVICESTATE$\n时间: $LONGDATETIME$\n信息:\n$SERVICEOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "服务报警: $HOSTNAME$ is $HOSTSTATE$"
+        command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n服务: $SERVICEDESC$\n主机: $HOSTALIAS$\nIP地>址: $HOSTADDRESS$\n状态: $SERVICESTATE$\n时间: $LONGDATETIME$\n信息:\n$SERVICEOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "服务报警: $HOSTNAME$ is $HOSTSTATE$"
 >
-}
+    }
 >
-配置完成,就可以在联系人模板中引用
+    配置完成,就可以在联系人模板中引用
 >
