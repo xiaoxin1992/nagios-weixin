@@ -56,7 +56,7 @@ def send_message(msg_title, msg_errorinfo, msg_openid):
 		'template_id': wxconfig.Wxid.template_id,
 		'url': '',
 		'msg_title': msg_title,
-		'msg_error': msg_errorinfo,
+		'msg_error': msg_errorinfo.strip(),
 		'time': time,
 		'msg_info': msg_info
 	}
