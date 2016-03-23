@@ -1,0 +1,27 @@
+2016-03-22 20:03:02  INFO {'errmsg': 'invalid appid hint: [qfyAwA0182vr23]', 'errcode': 40013}
+2016-03-22 20:03:02  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:03:21  INFO {'errmsg': 'invalid appid hint: [VCphWA0201vr23]', 'errcode': 40013}
+2016-03-22 20:03:21  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:03:55  INFO {'errmsg': 'invalid appid hint: [iSIi3a0235vr20]', 'errcode': 40013}
+2016-03-22 20:03:55  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:04:04  INFO {'errmsg': 'invalid appid hint: [qmHdqa0244vr22]', 'errcode': 40013}
+2016-03-22 20:04:04  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:04:33  INFO {'errmsg': 'invalid appid hint: [YqzRoA0273vr22]', 'errcode': 40013}
+2016-03-22 20:04:33  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:05:01  INFO {'errcode': 40013, 'errmsg': 'invalid appid hint: [2shLsa0301vr22]'}
+2016-03-22 20:05:01  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:05:15  INFO {'errmsg': 'invalid appid hint: [MYqD50315vr22]', 'errcode': 40013}
+2016-03-22 20:05:15  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 20:05:37  INFO {'errcode': 40013, 'errmsg': 'invalid appid hint: [BQc5eA0337vr19]'}
+2016-03-22 20:05:37  INFO Starting new HTTPS connection (1): api.weixin.qq.com
+2016-03-22 21:33:13  INFO {'errcode': 40003, 'errmsg': 'invalid openid hint: [tJV6ua0593ge11]'}
+2016-03-22 21:33:27  INFO {'errmsg': 'invalid openid hint: [X.g5uA0607ge12]', 'errcode': 40003}
+2016-03-22 21:33:30  INFO {'errcode': 40003, 'errmsg': 'invalid openid hint: [OIAgPa0610age8]'}
+
+
+
+2016-03-22 21:33:41  INFO {'errmsg': 'invalid openid hint: [aFCqmA0621ge12]', 'errcode': 40003}
+2016-03-22 22:07:47  INFO {'msgid': 402282643, 'errcode': 0, 'errmsg': 'ok'}
+2016-03-22 22:08:18  INFO {'errmsg': 'ok', 'errcode': 0, 'msgid': 402282647}
+2016-03-22 22:08:35  INFO {'errcode': 0, 'errmsg': 'ok', 'msgid': 402282655}
+2016-03-22 22:10:15  INFO {'errcode': 0, 'errmsg': 'ok', 'msgid': 402282675}

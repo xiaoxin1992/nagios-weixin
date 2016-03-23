@@ -1,12 +1,14 @@
 #  _*_ coding:utf-8
-from flask import Flask, request, make_response
-from xml.etree import cElementTree
 import hashlib
 import json
 import time
-import sqllite
 from os.path import dirname, join
 from sys import argv
+from xml.etree import cElementTree
+
+from flask import Flask, request, make_response
+
+from test import sqllite
 
 
 def sha1(data):

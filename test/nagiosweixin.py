@@ -1,12 +1,14 @@
 #  _*_ coding:utf-8
-from baseweixin import WeiXin, get, post
-from json import dumps, loads
-import sqllite
 import datetime
-import sys
-import os
 import getopt
-import ClassMail
+import os
+import sys
+from json import dumps, loads
+
+from baseweixin import WeiXin, get, post
+
+import sqllite
+from test import ClassMail
 
 
 def check_error(check_data):
