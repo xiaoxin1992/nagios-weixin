@@ -68,10 +68,11 @@ def index():
 		if not echostr and not signature and not timestamp and not nonce:
 			return "参数错误"
 		data = sorted([token, timestamp, nonce])
-		if sha1(''.join(data)) == signature.strip():
-			return echostr.strip()
-		else:
-			return "fail"
+		return echostr.strip()
+		#if sha1(''.join(data)) == signature.strip():
+		#	return echostr.strip()
+		#else:
+		#	return "fail"
 	else:
 		msg = """<xml>
 <ToUserName><![CDATA[%(openid)s]]></ToUserName>
