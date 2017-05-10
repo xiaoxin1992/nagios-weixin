@@ -100,5 +100,6 @@ if __name__ == "__main__":
 	if title is None or not msg_error or openid is None:
 		print("Usage: %s {-h help|-m mail address|-s subject}" % sys.argv[0])
 		sys.exit(1)
+
 	send_message(msg_title=title, msg_errorinfo=msg_error, msg_openid=openid)
 
