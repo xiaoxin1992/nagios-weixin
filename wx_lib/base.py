@@ -51,6 +51,9 @@ class WXBase:
         if result_token is None and result_token.status_code != 200:
             logging.error("获取Token失败...")
             return False
+        if result_token.json().get("errmsg") is not None:
+            logging.error("{err_msg}".format(err_msg=result_token.json().get("errmsg")))
+            return False
         token_data = {
             "token": result_token.json()["access_token"],
             "expires_time": int(datetime.now().timestamp()) + 7200}
