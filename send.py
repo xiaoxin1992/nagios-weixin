@@ -47,7 +47,6 @@ if __name__ == '__main__':
     parser.add_argument("--list", "-l", action='store_true', help="列出绑定邮箱地址")
     args = parser.parse_args()
     wx_obj = SendMassage()
-    print(args)
     if args.list:
         wx_obj.get_mail()
     elif args.content and args.mail:

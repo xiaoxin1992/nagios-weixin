@@ -1,161 +1,97 @@
-#接受nagios 信息发送到微信端
+#### 接受Nagios信息发送到微信端
 
-###环境要求
-工作环境要求 python3.4+
+[![Python3](https://img.shields.io/badge/Python-3.6+-blue.svg?style=popout&)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-1.1.1-orange.svg?style=popout&)](https://palletsprojects.com/p/flask/)
 
-模块要求: flask,requests
-安装方法: pip install flask
-安装方法: pip install requests
-
-###操作系统 Centos6.7 x86_64
+#### 机器要求
+需要外网IP地址,端口必须是80
 
 
-###Python3.4.4安装
->
+#### UWSGI配置
+```ini
+[uwsgi]
+http = 0.0.0.0:80
+#  项目代码路径
+chdir = /srv/wx/nagios-weixin
+#  python 安装路径
+home = /usr/local/python3
+wsgi-file = %(chdir)/web.py
+callable = app
+master = true
+processes = 2
+threads = 5
+vacuum = true
+pidfile = %(chdir)/wx_web.pid
+daemonize = %(chdir)/wx_web.log
+```
+#### UWSIG 启停
+```shell script
+# cd /srv/wx/nagios-weixin
+# /usr/local/python3/bin/uwsgi --ini config/uwsig.ini
+# /usr/local/python3/bin/uwsgi --reload wx_web.pid
+# /usr/local/python3/bin/uwsgi --stop wx_web.pid
+```
 
->
-下载安装包
->
-    [root@centos6-test-1 nagios-weixin]# wget https://www.python.org/ftp/python/3.4.4/Python-3.4.4.tgz
->
-编译安装
->
-    [root@centos6-test-1 nagios-weixin]tar zxf Python-3.4.4.tgz
->
-    [root@centos6-test-1 nagios-weixin]# cd Python-3.4.4
->
-    [root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
->
-    [root@centos6-test-1 Python-3.4.4]# ./configure --prefix=/usr/local/python3.4.4
->
-    [root@centos6-test-1 Python-3.4.4]# make && make install
->
-    [root@centos6-test-1 Python-3.4.4]#ln -s /usr/local/python3.4.4 /usr/local/python3
->
-    [root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install flask
->
-    [root@centos6-test-1 Python-3.4.4]#/usr/local/python3/bin/pip3 install requests
->
-###配置如下
-1.
->
-可以使用微信测试公共号,如果有企业号,可以直接使用
+#### 微信appID,appsecret配置
+路径: conf/config.json
+```json
+{
+  "app_id":"wx4fc565f7546asdaop9",  // appID
+  "secret":"2864f4114f5ea128c74c7ccb1opiuaaw098" // appsecret
+}
+```
 
-2.
->
-确保机器有外网IP
->
-运行 webapp.py
->
-webapp.py 一下操作需要用到,webapp.py默认使用的是80端口
->
-	接口验证，微信端发送邮箱到webapp.py 收到消息后，存入数据供发送消息调用
->
-	微信和邮箱绑定完成后，则可以关闭，发送消息不需要此程序
->
->
-3.
->
-配置接口信息
->
-    填写接口配置信息，此信息需要你有自己的服务器资源，填写的URL需要正确响应微信发送的Token验证
->
-4.
->
-添加模板信息
->
-    模板标题:故障通报通知
->
-模板内容:
->
-    {{first.DATA}} 故障现象：{{performance.DATA}} 故障时间：{{time.DATA}} {{remark.DATA}}
->
-5.
->
-配置cofig/config.json文件
->
-    {
-    "appid": "aaaaa",
->
-    "secret": "aaaaa",
->
-    "template_id":"6puShra9rwhBxNm12lQvFxoJbmKa_ONkemF4TV0",
->
-    "smtp_server": "smtp.sina.com",
->
-    "mail_sender": "aaa@sina.com",
->
-    "mail_password": "aaaa"
->
-    }
->
-    ###参数作用:
->
-    appid  开发者ID
->
-    secret 开发者密码
->
-    template 模板消息ID
->
->
-    如果邮箱没有绑定用户则使用下面参数邮件发送
->
-    smtp_server 邮件服务器地址
->
-    mail_sender  邮件账号
->
-    mail_password 邮件密码
->
-    配置cofig/token.json文件
->
-        {
->
-            "token": "xiaoixn"
->
-        }
->
-        token 微信跟服务器,认证的密码
->
+#### 微信回调接口
+web.py 文件
+```python
+# 　配置微信回调接口秘钥
+TOKEN = "1780ea515b9dc9bf"
+# 修改12~13行 TOKEN 需要跟公众平台回调接口保持一致
+```
 
-6.
->
-测试使用
->
-可以使用下面命令测试
->
-    echo "test"|/usr/local/python3/bin/python3 app.py  -m aaa@sina.com -s test
->
-方式结果:
->
-    如果-m 后跟的邮箱地址,已经绑定微信则消息发送到微信端
->
-    如果没有绑定则发送到邮箱
->
-7.
->
-绑定
->
-    绑定微信,扫描二维码关注公共号后,发送直接回复邮件地址,则可以绑定成功,一个邮件只能绑定一个微信号,一个微信号也只能绑定一个邮箱账号
->
-8.配置nagios
->
-    commands.cfg文件增加以下内容
->
-    define command{
->
-        command_name wx_host_mail
->
-        command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n主机: $HOSTALIAS$\n状态:$HOSTSTATE$\nIP地址: $HOSTADDRESS$\n时间: $LONGDATETIME$\n信息:\n$HOSTOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "主机报警: $HOSTNAME$ is $HOSTSTATE$"
->
-    }
->
-    define command{
->
-        command_name wx_server_mail
->
-        command_line /usr/bin/printf "%b" "通知类型: $NOTIFICATIONTYPE$\n服务: $SERVICEDESC$\n主机: $HOSTALIAS$\nIP地>址: $HOSTADDRESS$\n状态: $SERVICESTATE$\n时间: $LONGDATETIME$\n信息:\n$SERVICEOUTPUT$\n" | /usr/local/python3.4/bin/python3 /usr/local/nagios-weixin/app.py  -m $CONTACTEMAIL$ -s "服务报警: $HOSTNAME$ is $HOSTSTATE$"
->
-    }
->
-    配置完成,就可以在联系人模板中引用
->
+####　绑定
+绑定微信,扫描二维码关注公共号后,发送直接回复邮件地址,则可以绑定成功,一个邮件只能绑定一个微信号,一个微信号也只能绑定一个邮箱账号
+
+
+
+#### 配置nagios
+##### commands.cfg文件增加以下内容
+```
+define command{
+    command_name wx_host_mail
+    command_line /usr/bin/printf "%b" "主机报警: $HOSTNAME$ is $HOSTSTATE$\n通知类型: $NOTIFICATIONTYPE$\n主机: $HOSTALIAS$\n状态:$HOSTSTATE$\nIP地址: $HOSTADDRESS$\n时间: $LONGDATETIME$\n信息:\n$HOSTOUTPUT$\n" | /usr/local/python3/bin/python3 /srv/wx/nagios-weixin/send.py  --mail $CONTACTEMAIL$
+}
+
+define command{
+    command_name wx_server_mail
+    command_line /usr/bin/printf "%b" "服务报警: $HOSTNAME$ is $HOSTSTATE$\n通知类型: $NOTIFICATIONTYPE$\n服务: $SERVICEDESC$\n主机: $HOSTALIAS$\nIP地>址: $HOSTADDRESS$\n状态: $SERVICESTATE$\n时间: $LONGDATETIME$\n信息:\n$SERVICEOUTPUT$\n" | /usr/local/python3/bin/python3 /srv/wx/nagios-weixin/send.py  --mail $CONTACTEMAIL$
+}
+```
+
+#### 消息发送测试
+```shell script
+# /usr/local/python3/bin/python3 send.py --help # 帮助信息
+usage: send.py [-h] [--mail MAIL [MAIL ...]] [--content CONTENT] [--list]
+
+微信消息发送工具
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --mail MAIL [MAIL ...], -m MAIL [MAIL ...]
+                        邮箱地址
+  --content CONTENT, -c CONTENT
+                        消息内容
+  --list, -l            列出绑定邮箱地址
+
+# /usr/local/python3/bin/python3 send.py -l #　列出所有绑定用户
++------------------+----------+------------+
+|       邮箱       | 微信昵称 |  创建时间  |
++------------------+----------+------------+
+| 89411299sal@qq.com |    XY    | 1565370502 |
++------------------+----------+------------+
+
+/usr/local/python3/bin/python3 send.py --mail 894133540@qq.com -c 这是一条测试警告 # 发送消息方法一
+INFO:root:XY,邮箱为:894133540@qq.com发送消息成功...
+echo "这是第二条测试警告" | /usr/local/python3/bin/python3 /srv/wx/nagios-weixin/send.py --mail 894133540@qq.com # 发送消息方法二
+INFO:root:XY,邮箱为:894133540@qq.com发送消息成功...
+```
