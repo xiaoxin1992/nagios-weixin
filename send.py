@@ -28,7 +28,8 @@ class SendMassage(GetConfig):
         storage_obj = StorageUser(self.root)
         table = PrettyTable(["邮箱", "微信昵称", "创建时间"])
         for opens_id in storage_obj.read():
-            table.add_row([open_id["email"], opens_id["nick_name"], open_id["create_time"]])
+            table.add_row([opens_id["email"], opens_id["nick_name"], opens_id["create_time"]])
+        print(table)
 
     def check_mail(self, email):
         storage_obj = StorageUser(self.root)
@@ -46,6 +47,7 @@ if __name__ == '__main__':
     parser.add_argument("--list", "-l", action='store_true', help="列出绑定邮箱地址")
     args = parser.parse_args()
     wx_obj = SendMassage()
+    print(args)
     if args.list:
         wx_obj.get_mail()
     elif args.content and args.mail:
@@ -55,6 +57,14 @@ if __name__ == '__main__':
                 logging.error("邮箱: {mail}不存在,不进行消息发送".format(mail=mail))
                 continue
             if wx_obj.wx_send(open_id["open_id"], args.content.encode("utf-8")):
+                logging.info("{nick_name},邮箱为:{mail}发送消息成功...".format(nick_name=open_id["nick_name"], mail=mail))
+    elif args.mail:
+        for mail in args.mail:
+            open_id = wx_obj.check_mail(mail)
+            if open_id is None:
+                logging.error("邮箱: {mail}不存在,不进行消息发送".format(mail=mail))
+                continue
+            if wx_obj.wx_send(open_id["open_id"], sys.stdin.read().encode("utf-8")):
                 logging.info("{nick_name},邮箱为:{mail}发送消息成功...".format(nick_name=open_id["nick_name"], mail=mail))
     else:
         parser.print_help()
