@@ -1,4 +1,4 @@
-#### 接受Nagios信息发送到微信端
+#### 接收Nagios信息发送到微信端
 
 [![Python3](https://img.shields.io/badge/Python-3.6+-blue.svg?style=popout&)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-1.1.1-orange.svg?style=popout&)](https://palletsprojects.com/p/flask/)
