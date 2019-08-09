@@ -1,8 +1,4 @@
 {
-  "appid":"aaaaa",
-  "secret":"aaaa",
-  "template_id":"6puShra9rwhBxNm12lQvFxoJbmKa_ONkemF4TV0",
-  "smtp_server": "smtp.sina.com",
-  "mail_sender": "aaaa@sina.com",
-  "mail_password": "aaaa"
+  "app_id":"wx4fc565f7546asdaop9",
+  "secret":"2864f4114f5ea128c74c7ccb1opiuaaw098",
 }

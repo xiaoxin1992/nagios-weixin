@@ -48,7 +48,7 @@ class WXBase:
         url = "{base_url}/cgi-bin/token?grant_type=client_credential&appid={app_id}&secret={app_secret}"
         args = {"base_url": self.base_url, "app_id": self.app_id, "app_secret": self.app_secret}
         result_token = self.request(url.format(**args), timeout=20)
-        if result_token is None or result_token.status_code != 200:
+        if result_token is None and result_token.status_code != 200:
             logging.error("获取Token失败...")
             return False
         token_data = {
@@ -67,7 +67,7 @@ class WXBase:
         """
         url = "{base_url}/cgi-bin/getcallbackip?access_token={token}".format(base_url=self.base_url, token=self.token)
         result_server = self.request(url, timeout=20)
-        if result_server is None or result_server.status_code != 200:
+        if result_server is None and result_server.status_code != 200:
             logging.error("获取服务器列表失败...")
             return []
         logging.info("获取服务器列表成功...")
@@ -86,14 +86,16 @@ class WXBase:
             "touser": "{open_id}".format(open_id=open_id),
             "msgtype": "text",
             "text": {
-                "content": "{content}".format(content=content)
+                "content": "{content}".format(content=content.decode("utf-8"))
             }
         }
-        result_send = self.request(url, method="post", data=json.dumps(data))
-        if result_send is not None or result_send.status_code == 200 or result_send.json()["errcode"] == 0:
-            logging.info("微信消息发送成功, 时间: {time}...".format(time=datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
+        result_send = self.request(url, method="post",
+                                   data=bytes(json.dumps(data, ensure_ascii=False), encoding='utf-8'))
+        if result_send is not None and result_send.status_code == 200 and result_send.json()["errcode"] == 0:
+            # logging.info("微信消息发送成功, 时间: {time}...".format(time=datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
             return True
-        logging.error("微信消息发送失败, 时间: {time}...".format(time=datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
+        logging.error("微信消息发送失败, 错误: {error} 时间: {time}...".format(error=result_send.json()["errmsg"],
+                                                                   time=datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
         return False
 
     def nick_name_get(self, open_id):
@@ -141,7 +143,8 @@ class StorageUser:
         :param email:
         :return:
         """
-        if not os.path.exists(os.path.dirname(self.storage_path)) or not os.path.isdir(os.path.dirname(self.storage_path)):
+        if not os.path.exists(os.path.dirname(self.storage_path)) or not os.path.isdir(
+                os.path.dirname(self.storage_path)):
             logging.error("存储路径{storage_path}不存在...".format(storage_path=self.storage_path))
             return False
         data = self.__read()
@@ -160,7 +163,8 @@ class StorageUser:
         :param open_id:
         :return:
         """
-        if not os.path.exists(os.path.dirname(self.storage_path)) or not os.path.isdir(os.path.dirname(self.storage_path)):
+        if not os.path.exists(os.path.dirname(self.storage_path)) or not os.path.isdir(
+                os.path.dirname(self.storage_path)):
             logging.error("存储路径{storage_path}不存在...".format(storage_path=self.storage_path))
             return None
         target_open_id = list(filter(lambda x: x["open_id"].strip() == open_id.strip(), self.read()))
