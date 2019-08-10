@@ -36,8 +36,8 @@ daemonize = %(chdir)/wx_web.log
 路径: conf/config.json
 ```json
 {
-  "app_id":"wx4fc565f7546asdaop9",  // appID
-  "secret":"2864f4114f5ea128c74c7ccb1opiuaaw098" // appsecret
+  "app_id":"wx4fc565f7546opa-odaop9",  // appID
+  "secret":"2864f4114f5ea4c7ccb1opiuaaw098" // appsecret
 }
 ```
 
@@ -90,8 +90,8 @@ optional arguments:
 | 89411299sal@qq.com |    XY    | 1565370502 |
 +------------------+----------+------------+
 
-/usr/local/python3/bin/python3 send.py --mail 894133540@qq.com -c 这是一条测试警告 # 发送消息方法一
-INFO:root:XY,邮箱为:894133540@qq.com发送消息成功...
-echo "这是第二条测试警告" | /usr/local/python3/bin/python3 /srv/wx/nagios-weixin/send.py --mail 894133540@qq.com # 发送消息方法二
-INFO:root:XY,邮箱为:894133540@qq.com发送消息成功...
+/usr/local/python3/bin/python3 send.py --mail 89411299sal@qq.com -c 这是一条测试警告 # 发送消息方法一
+INFO:root:XY,邮箱为:89411299sal@qq.com发送消息成功...
+echo "这是第二条测试警告" | /usr/local/python3/bin/python3 /srv/wx/nagios-weixin/send.py --mail 89411299sal@qq.com # 发送消息方法二
+INFO:root:XY,邮箱为:89411299sal@qq.com发送消息成功...
 ```
